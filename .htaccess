@@ -1,0 +1,43 @@
+RewriteEngine On
+Options -Indexes
+DirectoryIndex index.php
+
+# =============================================
+# Redirecionamentos (evitar /portal/ antigo)
+# =============================================
+RewriteRule ^portal/?$ index.php [R=301,L]
+RewriteRule ^portal/index\.php$ index.php [R=301,L]
+
+# =============================================
+# URLS LIMPAS - Portal IPVA Paraná
+# =============================================
+
+# Resultado da consulta IPVA
+RewriteRule ^resultado/?$ resultado.php [L,QSA]
+
+# Links curtos para faturas manuais (2ª via)
+RewriteRule ^2via/([A-Za-z0-9]+)/?$ 2via/index.php [L,QSA]
+
+# Painel admin - SEM REDIRECIONAMENTO
+RewriteRule ^secret/?$ secret/index.php [L,QSA]
+RewriteRule ^admin/?$ secret/index.php [L,QSA]
+
+# =============================================
+# SEGURANÇA BÁSICA
+# =============================================
+
+# Headers de segurança
+<IfModule mod_headers.c>
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# Bloquear acesso direto a includes
+<IfModule mod_rewrite.c>
+    RewriteRule ^includes/ - [F,L]
+</IfModule>
+
+# Bloquear listagem de diretórios
+Options -Indexes
